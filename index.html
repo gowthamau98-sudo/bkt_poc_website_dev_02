@@ -144,7 +144,7 @@
     </header>
 
     <section class="hero">
-      <h2>Hi, I build things for the web v2.</h2>
+      <h2>Hi, I build things for the web v3.</h2>
       <p>Welcome to my personal portfolio hosted on GitHub Pages. Below are a few small projects I am currently working on.</p>
     </section>
 
@@ -229,17 +229,26 @@
   <script type="text/javascript">
     const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-    // 1. Show your custom button once the Salesforce button/widget is ready
+    // 1. Force-hide Salesforce's default button as soon as it is created
     window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
+      embeddedservice_bootstrap.utilAPI.hideChatButton();
       customChatBtn.style.display = "flex";
     });
 
-    // 2. Re-show your custom button if the user minimizes the chat window
+    // 2. Also hide it if business hours trigger it to show up later
+    window.addEventListener("onEmbeddedMessagingWithinBusinessHours", () => {
+      if (embeddedservice_bootstrap.utilAPI) {
+        embeddedservice_bootstrap.utilAPI.hideChatButton();
+      }
+    });
+
+    // 3. Re-hide Salesforce's button and show your custom button when minimized
     window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
+      embeddedservice_bootstrap.utilAPI.hideChatButton();
       customChatBtn.style.display = "flex";
     });
 
-    // 3. Launch Salesforce chat and hide your custom button on click
+    // 4. Launch Salesforce chat and hide your custom button on click
     customChatBtn.addEventListener("click", () => {
       embeddedservice_bootstrap.utilAPI.launchChat()
         .then(() => {
@@ -253,15 +262,14 @@
     function initEmbeddedMessaging() {
       try {
         embeddedservice_bootstrap.settings.language = 'en_US';
-        // Hide the default Salesforce "Ask Me Anything" pill button
         embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
         embeddedservice_bootstrap.init(
           '00DC4000005pndJ',
           'BKT_Web_Messaging',
-          'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
+          'https://site.com',
           {
-            scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
+            scrt2URL: 'https://salesforce-scrt.com'
           }
         );
       } catch (err) {
