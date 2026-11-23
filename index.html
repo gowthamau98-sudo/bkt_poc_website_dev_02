@@ -240,43 +240,61 @@
 
   const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-  // Salesforce button created event
-  window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
+  // Custom BKT launcher
+const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-    console.log("Salesforce messaging button created");
+// Function to hide Salesforce standard launcher
+function hideStandardLauncher() {
+    try {
+        embeddedservice_bootstrap.utilAPI.hideChatButton();
+        console.log("Salesforce launcher hide API called");
+    } catch (err) {
+        console.error("Error hiding Salesforce launcher:", err);
+    }
+}
 
-    // Show custom BKT launcher
+// IMPORTANT: Handle button creation directly on Salesforce bootstrap
+// This callback must be registered before embeddedservice_bootstrap.init()
+embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function () {
+
+    console.log("Salesforce button-created callback triggered");
+
+    hideStandardLauncher();
+
     customChatBtn.style.display = "flex";
 
-    // Hide standard Salesforce launcher after rendering
-    setTimeout(() => {
-        embeddedservice_bootstrap.utilAPI.hideChatButton();
-        console.log("Salesforce standard launcher hidden");
-    }, 500);
+};
 
-  });
+// Handle chat minimization
+window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
 
-  // Chat window minimized event
-  window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
+    console.log("Chat minimized");
 
-    console.log("Chat window minimized");
-
-    // Show custom BKT launcher
     customChatBtn.style.display = "flex";
 
-    // Wait for Salesforce to finish its UI update
-    setTimeout(() => {
+    hideStandardLauncher();
 
-        // Hide Salesforce standard launcher
-        embeddedservice_bootstrap.utilAPI.hideChatButton();
+});
 
-        console.log("Salesforce standard launcher hidden after minimize");
+// Handle custom BKT button click
+customChatBtn.addEventListener("click", () => {
 
-    }, 500);
+    embeddedservice_bootstrap.utilAPI.launchChat()
+        .then(() => {
 
-  });
+            console.log("Chat launched successfully");
 
-  // Custom BKT launcher click event
+            customChatBtn.style.display = "none";
+
+        })
+        .catch((err) => {
+
+            console.error("Chat launch error:", err);
+
+        });
+
+});
+	
   customChatBtn.addEventListener("click", () => {
 
     embeddedservice_bootstrap.utilAPI.launchChat()
