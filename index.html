@@ -195,7 +195,9 @@
 <script type='text/javascript' src='https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 -->
 
-	<style>
+	
+<!-- Custom Round BKT Chat Launcher Button -->
+  <style>
     #custom-bkt-chat-btn {
       width: 64px;
       height: 64px;
@@ -223,32 +225,23 @@
 
   <!-- Replace YOUR_BKT_LOGO_URL with your actual logo image URL -->
   <button id="custom-bkt-chat-btn" aria-label="Open Chat">
-    <img src="https://commercial.bkt-tires.com/wp-content/uploads/2026/03/logo-commercial-on_light@2x.png" alt="BKT Chat" />
+    <img src="https://commercial.bkt-tires.com/wp-content/uploads/2026/02/logo-consumer-on_light@2x-1.png" alt="BKT Chat" />
   </button>
 
   <script type="text/javascript">
     const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-    // 1. Force-hide Salesforce's default button as soon as it is created
+    // 1. Show your custom button once the Salesforce button/widget is ready
     window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
-      embeddedservice_bootstrap.utilAPI.hideChatButton();
       customChatBtn.style.display = "flex";
     });
 
-    // 2. Also hide it if business hours trigger it to show up later
-    window.addEventListener("onEmbeddedMessagingWithinBusinessHours", () => {
-      if (embeddedservice_bootstrap.utilAPI) {
-        embeddedservice_bootstrap.utilAPI.hideChatButton();
-      }
-    });
-
-    // 3. Re-hide Salesforce's button and show your custom button when minimized
+    // 2. Re-show your custom button if the user minimizes the chat window
     window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
-      embeddedservice_bootstrap.utilAPI.hideChatButton();
       customChatBtn.style.display = "flex";
     });
 
-    // 4. Launch Salesforce chat and hide your custom button on click
+    // 3. Launch Salesforce chat and hide your custom button on click
     customChatBtn.addEventListener("click", () => {
       embeddedservice_bootstrap.utilAPI.launchChat()
         .then(() => {
@@ -262,14 +255,15 @@
     function initEmbeddedMessaging() {
       try {
         embeddedservice_bootstrap.settings.language = 'en_US';
+        // Hide the default Salesforce "Ask Me Anything" pill button
         embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
         embeddedservice_bootstrap.init(
           '00DC4000005pndJ',
           'BKT_Web_Messaging',
-          'https://site.com',
+          'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
           {
-            scrt2URL: 'https://salesforce-scrt.com'
+            scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
           }
         );
       } catch (err) {
