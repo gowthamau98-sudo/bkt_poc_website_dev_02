@@ -257,18 +257,14 @@
     }
   }
 
-  // Salesforce button created event
-  window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
-
-    console.log("Salesforce messaging button created");
-
-    // Show custom BKT button
-    customChatBtn.style.display = "flex";
-
-    // Hide Salesforce standard button
-    hideStandardLauncher();
-
-  });
+  // Show custom BKT button when Salesforce creates its launcher
+	window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
+	
+		console.log("Salesforce messaging button created");
+	
+		customChatBtn.style.display = "flex";
+	
+	});
 
   // Chat minimized event
   window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
@@ -303,32 +299,50 @@
 
   });
 
-  // Initialize Salesforce Embedded Messaging
-  function initEmbeddedMessaging() {
+  
+// Initialize Salesforce Embedded Messaging
+function initEmbeddedMessaging() {
 
     try {
 
-      embeddedservice_bootstrap.settings.language = "en_US";
+        embeddedservice_bootstrap.settings.language = "en_US";
 
-      // Hide Salesforce default launcher on initial load
-      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+        // Hide standard Salesforce launcher initially
+        embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-      embeddedservice_bootstrap.init(
-        "00DC4000005pndJ",
-        "BKT_Web_Messaging",
-        "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
-        {
-          scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
-        }
-      );
+        // Register callback BEFORE Salesforce initialization
+        embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function () {
+
+            console.log("Salesforce launcher created");
+
+            // Hide standard Salesforce launcher
+            embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+            console.log("Salesforce hideChatButton API executed");
+
+            // Show custom BKT launcher
+            customChatBtn.style.display = "flex";
+
+        };
+
+        // Initialize Salesforce
+        embeddedservice_bootstrap.init(
+            "00DC4000005pndJ",
+            "BKT_Web_Messaging",
+            "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
+            {
+                scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
+            }
+        );
 
     } catch (err) {
 
-      console.error("Error initializing Salesforce Messaging:", err);
+        console.error("Error initializing Salesforce Messaging:", err);
 
     }
 
-  }
+}
+
 
 </script>
 
