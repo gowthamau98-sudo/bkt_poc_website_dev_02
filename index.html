@@ -236,65 +236,54 @@
   />
 </button>
 
+
 <script type="text/javascript">
 
+  // Get custom BKT button (declare only once)
   const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-  // Custom BKT launcher
-const customChatBtn = document.getElementById("custom-bkt-chat-btn");
-
-// Function to hide Salesforce standard launcher
-function hideStandardLauncher() {
+  // Function to hide Salesforce standard launcher
+  function hideStandardLauncher() {
     try {
+      if (
+        window.embeddedservice_bootstrap &&
+        embeddedservice_bootstrap.utilAPI
+      ) {
         embeddedservice_bootstrap.utilAPI.hideChatButton();
         console.log("Salesforce launcher hide API called");
+      }
     } catch (err) {
-        console.error("Error hiding Salesforce launcher:", err);
+      console.error("Error hiding Salesforce launcher:", err);
     }
-}
+  }
 
-// IMPORTANT: Handle button creation directly on Salesforce bootstrap
-// This callback must be registered before embeddedservice_bootstrap.init()
-embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function () {
+  // Salesforce button created event
+  window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
 
-    console.log("Salesforce button-created callback triggered");
+    console.log("Salesforce messaging button created");
 
-    hideStandardLauncher();
-
+    // Show custom BKT button
     customChatBtn.style.display = "flex";
 
-};
-
-// Handle chat minimization
-window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
-
-    console.log("Chat minimized");
-
-    customChatBtn.style.display = "flex";
-
+    // Hide Salesforce standard button
     hideStandardLauncher();
 
-});
+  });
 
-// Handle custom BKT button click
-customChatBtn.addEventListener("click", () => {
+  // Chat minimized event
+  window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
 
-    embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => {
+    console.log("Chat window minimized");
 
-            console.log("Chat launched successfully");
+    // Show custom BKT button
+    customChatBtn.style.display = "flex";
 
-            customChatBtn.style.display = "none";
+    // Hide Salesforce standard button
+    hideStandardLauncher();
 
-        })
-        .catch((err) => {
+  });
 
-            console.error("Chat launch error:", err);
-
-        });
-
-});
-	
+  // Custom BKT button click event (ONLY ONCE)
   customChatBtn.addEventListener("click", () => {
 
     embeddedservice_bootstrap.utilAPI.launchChat()
@@ -302,7 +291,7 @@ customChatBtn.addEventListener("click", () => {
 
         console.log("Chat launched successfully");
 
-        // Hide custom launcher while chat is open
+        // Hide custom button while chat is open
         customChatBtn.style.display = "none";
 
       })
@@ -319,23 +308,23 @@ customChatBtn.addEventListener("click", () => {
 
     try {
 
-      embeddedservice_bootstrap.settings.language = 'en_US';
+      embeddedservice_bootstrap.settings.language = "en_US";
 
-      // Hide standard Salesforce button on page load
+      // Hide Salesforce default launcher on initial load
       embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
       embeddedservice_bootstrap.init(
-        '00DC4000005pndJ',
-        'BKT_Web_Messaging',
-        'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
+        "00DC4000005pndJ",
+        "BKT_Web_Messaging",
+        "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
         {
-          scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
+          scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
         }
       );
 
     } catch (err) {
 
-      console.error("Error loading Embedded Messaging:", err);
+      console.error("Error initializing Salesforce Messaging:", err);
 
     }
 
@@ -343,7 +332,7 @@ customChatBtn.addEventListener("click", () => {
 
 </script>
 
-<!-- Salesforce Bootstrap Script -->
+	
 <script
   type="text/javascript"
   src="https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js"
