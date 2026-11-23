@@ -245,11 +245,14 @@
 
     console.log("Salesforce messaging button created");
 
-    // Hide standard Salesforce launcher
-    embeddedservice_bootstrap.utilAPI.hideChatButton();
-
     // Show custom BKT launcher
     customChatBtn.style.display = "flex";
+
+    // Hide standard Salesforce launcher after rendering
+    setTimeout(() => {
+        embeddedservice_bootstrap.utilAPI.hideChatButton();
+        console.log("Salesforce standard launcher hidden");
+    }, 500);
 
   });
 
@@ -258,11 +261,18 @@
 
     console.log("Chat window minimized");
 
-    // Hide Salesforce launcher
-    embeddedservice_bootstrap.utilAPI.hideChatButton();
-
     // Show custom BKT launcher
     customChatBtn.style.display = "flex";
+
+    // Wait for Salesforce to finish its UI update
+    setTimeout(() => {
+
+        // Hide Salesforce standard launcher
+        embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+        console.log("Salesforce standard launcher hidden after minimize");
+
+    }, 500);
 
   });
 
