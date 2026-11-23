@@ -199,6 +199,11 @@
 
 <!-- Custom BKT Chat Launcher Button -->
 
+
+<!-- ====================================== -->
+<!-- CUSTOM BKT CHAT LAUNCHER -->
+<!-- ====================================== -->
+
 <style>
   #custom-bkt-chat-btn {
     width: 64px;
@@ -215,7 +220,7 @@
     position: fixed;
     bottom: 24px;
     right: 24px;
-    z-index: 9999;
+    z-index: 999999;
 
     cursor: pointer;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -236,54 +241,62 @@
   />
 </button>
 
-
 <script type="text/javascript">
 
-  // Get custom BKT button (declare only once)
+  // Get custom BKT button
   const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-  // Function to hide Salesforce standard launcher
+  // Hide standard Salesforce launcher
   function hideStandardLauncher() {
+
     try {
-      if (
-        window.embeddedservice_bootstrap &&
-        embeddedservice_bootstrap.utilAPI
-      ) {
+
+      if (window.embeddedservice_bootstrap?.utilAPI) {
+
         embeddedservice_bootstrap.utilAPI.hideChatButton();
-        console.log("Salesforce launcher hide API called");
+
+        console.log("Salesforce hideChatButton called");
+
       }
+
     } catch (err) {
+
       console.error("Error hiding Salesforce launcher:", err);
+
     }
+
   }
 
-  // Show custom BKT button when Salesforce creates its launcher
-	window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
-	
-		console.log("Salesforce messaging button created");
-	
-		customChatBtn.style.display = "flex";
-	
-	});
+  // Salesforce launcher created event
+  window.addEventListener("onEmbeddedMessagingButtonCreated", function () {
 
-  // Chat minimized event
-  window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
+    console.log("Salesforce launcher created");
 
-    console.log("Chat window minimized");
-
-    // Show custom BKT button
-    customChatBtn.style.display = "flex";
-
-    // Hide Salesforce standard button
     hideStandardLauncher();
+
+    // Show custom BKT launcher
+    customChatBtn.style.display = "flex";
 
   });
 
-  // Custom BKT button click event (ONLY ONCE)
-  customChatBtn.addEventListener("click", () => {
+  // Chat minimized event
+  window.addEventListener("onEmbeddedMessagingWindowMinimized", function () {
+
+    console.log("Chat minimized");
+
+    hideStandardLauncher();
+
+    // Show custom BKT launcher
+    customChatBtn.style.display = "flex";
+
+  });
+
+  // Custom BKT button click
+  customChatBtn.addEventListener("click", function () {
 
     embeddedservice_bootstrap.utilAPI.launchChat()
-      .then(() => {
+
+      .then(function () {
 
         console.log("Chat launched successfully");
 
@@ -291,75 +304,68 @@
         customChatBtn.style.display = "none";
 
       })
-      .catch((err) => {
 
-        console.error("Error launching chat:", err);
+      .catch(function (err) {
+
+        console.error("Chat launch error:", err);
 
       });
 
   });
 
-  
-// Initialize Salesforce Embedded Messaging
-function initEmbeddedMessaging() {
+  // Initialize Salesforce Embedded Messaging
+  function initEmbeddedMessaging() {
 
     try {
 
-        embeddedservice_bootstrap.settings.language = "en_US";
+      embeddedservice_bootstrap.settings.language = "en_US";
 
-        // Hide standard Salesforce launcher initially
-        embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+      // Hide default Salesforce launcher on initial load
+      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
 
-        // Register callback BEFORE Salesforce initialization
-        embeddedservice_bootstrap.onEmbeddedMessagingButtonCreated = function () {
-
-            console.log("Salesforce launcher created");
-
-            // Hide standard Salesforce launcher
-            embeddedservice_bootstrap.utilAPI.hideChatButton();
-
-            console.log("Salesforce hideChatButton API executed");
-
-            // Show custom BKT launcher
-            customChatBtn.style.display = "flex";
-
-        };
-
-        // Initialize Salesforce
-        embeddedservice_bootstrap.init(
-            "00DC4000005pndJ",
-            "BKT_Web_Messaging",
-            "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
-            {
-                scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
-            }
-        );
+      // Initialize Salesforce
+      embeddedservice_bootstrap.init(
+        "00DC4000005pndJ",
+        "BKT_Web_Messaging",
+        "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
+        {
+          scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
+        }
+      );
 
     } catch (err) {
 
-        console.error("Error initializing Salesforce Messaging:", err);
+      console.error("Salesforce initialization error:", err);
 
     }
 
-}
-
+  }
 
 </script>
 
-	
+<!-- Salesforce Bootstrap Script -->
 <script
   type="text/javascript"
   src="https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js"
   onload="initEmbeddedMessaging()">
 </script>
-	
-	
 
-  <script>
-    const toggleBtn = document.getElementById("theme-toggle");
-    toggleBtn.addEventListener("click", () => {
-      document.body.classList.toggle("dark");
-    });
-  </script>
+<!-- ====================================== -->
+<!-- DARK MODE -->
+<!-- ====================================== -->
+
+<script>
+
+  const toggleBtn = document.getElementById("theme-toggle");
+
+  toggleBtn.addEventListener("click", function () {
+
+    document.body.classList.toggle("dark");
+
+  });
+
+</script>
+
+	
 </body>
 </html>
