@@ -228,49 +228,112 @@
     <img src="https://commercial.bkt-tires.com/wp-content/uploads/2026/02/logo-consumer-on_light@2x-1.png" alt="BKT Chat" />
   </button>
 
-  <script type="text/javascript">
+  
+<script type="text/javascript">
+
+    // Get custom BKT launcher
     const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-    // 1. Show your custom button once the Salesforce button/widget is ready
-    window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
-      customChatBtn.style.display = "flex";
-    });
+    // Hide Salesforce standard launcher
+    function hideStandardLauncher() {
 
-    // 2. Re-show your custom button if the user minimizes the chat window
-    window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
-      customChatBtn.style.display = "flex";
-    });
+        try {
 
-    // 3. Launch Salesforce chat and hide your custom button on click
-    customChatBtn.addEventListener("click", () => {
-      embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => {
-          customChatBtn.style.display = "none";
-        })
-        .catch((err) => {
-          console.error("Error launching chat:", err);
-        });
-    });
+            if (window.embeddedservice_bootstrap &&
+                embeddedservice_bootstrap.utilAPI) {
 
-    function initEmbeddedMessaging() {
-      try {
-        embeddedservice_bootstrap.settings.language = 'en_US';
-        // Hide the default Salesforce "Ask Me Anything" pill button
-        embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+                embeddedservice_bootstrap.utilAPI.hideChatButton();
 
-        embeddedservice_bootstrap.init(
-          '00DC4000005pndJ',
-          'BKT_Web_Messaging',
-          'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
-          {
-            scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
-          }
-        );
-      } catch (err) {
-        console.error('Error loading Embedded Messaging: ', err);
-      }
+                console.log("Salesforce standard launcher hide requested");
+
+            }
+
+        } catch (error) {
+
+            console.error("Hide launcher error:", error);
+
+        }
+
     }
-  </script>
+
+    // Salesforce button created event
+    window.addEventListener("onEmbeddedMessagingButtonCreated", function () {
+
+        console.log("Salesforce launcher created");
+
+        // Hide standard Salesforce button
+        hideStandardLauncher();
+
+        // Show custom BKT button
+        customChatBtn.style.display = "flex";
+
+    });
+
+    // Chat minimized event
+    window.addEventListener("onEmbeddedMessagingWindowMinimized", function () {
+
+        console.log("Salesforce chat minimized");
+
+        // Hide standard Salesforce button
+        hideStandardLauncher();
+
+        // Show custom BKT button
+        customChatBtn.style.display = "flex";
+
+    });
+
+    // Custom BKT button click
+    customChatBtn.addEventListener("click", function () {
+
+        embeddedservice_bootstrap.utilAPI.launchChat()
+
+            .then(function () {
+
+                console.log("Chat launched successfully");
+
+                // Hide custom BKT button while chat is open
+                customChatBtn.style.display = "none";
+
+            })
+
+            .catch(function (error) {
+
+                console.error("Chat launch error:", error);
+
+            });
+
+    });
+
+    // Initialize Salesforce Embedded Messaging
+    function initEmbeddedMessaging() {
+
+        try {
+
+            embeddedservice_bootstrap.settings.language = "en_US";
+
+            // Hide default Salesforce launcher on initial load
+            embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+
+            // Initialize Salesforce
+            embeddedservice_bootstrap.init(
+                "00DC4000005pndJ",
+                "BKT_Web_Messaging",
+                "https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729",
+                {
+                    scrt2URL: "https://prolim5--dev.sandbox.my.salesforce-scrt.com"
+                }
+            );
+
+        } catch (error) {
+
+            console.error("Salesforce initialization error:", error);
+
+        }
+
+    }
+
+</script>
+
   <script type="text/javascript" src="https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js" onload="initEmbeddedMessaging()"></script>
 
   <script>
