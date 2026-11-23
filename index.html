@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+  <!--<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">-->
   <title>My GitHub Portfolio</title>
   <style>
     :root {
@@ -221,6 +221,11 @@
       height: 44px;
       object-fit: contain;
     }
+
+    /* Permanently hide Salesforce's default launcher */
+    #embeddedMessagingConversationButton {
+      display: none !important;
+    }
   </style>
 
   <!-- Replace YOUR_BKT_LOGO_URL with your actual logo image URL -->
@@ -231,77 +236,28 @@
   
 <script type="text/javascript">
 
-    // Get custom BKT launcher
     const customChatBtn = document.getElementById("custom-bkt-chat-btn");
 
-    // Hide Salesforce standard launcher
-    function hideStandardLauncher() {
+    function showCustomBtn() { customChatBtn.style.display = "flex"; }
+    function hideCustomBtn() { customChatBtn.style.display = "none"; }
 
-        try {
+    // Widget ready: show only our button
+    window.addEventListener("onEmbeddedMessagingButtonCreated", showCustomBtn);
 
-            if (window.embeddedservice_bootstrap &&
-                embeddedservice_bootstrap.utilAPI) {
+    // Chat opened: hide our button
+    window.addEventListener("onEmbeddedMessagingWindowMaximized", hideCustomBtn);
 
-                embeddedservice_bootstrap.utilAPI.hideChatButton();
+    // Chat minimized or closed: bring our button back
+    window.addEventListener("onEmbeddedMessagingWindowMinimized", showCustomBtn);
+    window.addEventListener("onEmbeddedMessagingWindowClosed", showCustomBtn);
 
-                console.log("Salesforce standard launcher hide requested");
-
-            }
-
-        } catch (error) {
-
-            console.error("Hide launcher error:", error);
-
-        }
-
-    }
-
-    // Salesforce button created event
-    window.addEventListener("onEmbeddedMessagingButtonCreated", function () {
-
-        console.log("Salesforce launcher created");
-
-        // Hide standard Salesforce button
-        hideStandardLauncher();
-
-        // Show custom BKT button
-        customChatBtn.style.display = "flex";
-
-    });
-
-    // Chat minimized event
-    window.addEventListener("onEmbeddedMessagingWindowMinimized", function () {
-
-        console.log("Salesforce chat minimized");
-
-        // Hide standard Salesforce button
-        hideStandardLauncher();
-
-        // Show custom BKT button
-        customChatBtn.style.display = "flex";
-
-    });
-
-    // Custom BKT button click
+    // Custom button click
     customChatBtn.addEventListener("click", function () {
-
         embeddedservice_bootstrap.utilAPI.launchChat()
-
-            .then(function () {
-
-                console.log("Chat launched successfully");
-
-                // Hide custom BKT button while chat is open
-                customChatBtn.style.display = "none";
-
-            })
-
+            .then(hideCustomBtn)
             .catch(function (error) {
-
                 console.error("Chat launch error:", error);
-
             });
-
     });
 
     // Initialize Salesforce Embedded Messaging
