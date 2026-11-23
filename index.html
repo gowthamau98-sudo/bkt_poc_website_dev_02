@@ -195,83 +195,134 @@
 <script type='text/javascript' src='https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js' onload='initEmbeddedMessaging()'></script>
 -->
 
+
+
+<!-- Custom BKT Chat Launcher Button -->
+
+<style>
+  #custom-bkt-chat-btn {
+    width: 64px;
+    height: 64px;
+    padding: 0;
+    border-radius: 50%;
+    background: #FFFFFF;
+    border: 2px solid #007734;
+
+    display: none;
+    align-items: center;
+    justify-content: center;
+
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 9999;
+
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+
+  #custom-bkt-chat-btn img {
+    width: 44px;
+    height: 44px;
+    object-fit: contain;
+  }
+</style>
+
+<!-- Custom BKT Button -->
+<button id="custom-bkt-chat-btn" aria-label="Open Chat">
+  <img
+    src="https://commercial.bkt-tires.com/wp-content/uploads/2026/02/logo-consumer-on_light@2x-1.png"
+    alt="BKT Chat"
+  />
+</button>
+
+<script type="text/javascript">
+
+  const customChatBtn = document.getElementById("custom-bkt-chat-btn");
+
+  // Salesforce button created event
+  window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
+
+    console.log("Salesforce messaging button created");
+
+    // Hide standard Salesforce launcher
+    embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+    // Show custom BKT launcher
+    customChatBtn.style.display = "flex";
+
+  });
+
+  // Chat window minimized event
+  window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
+
+    console.log("Chat window minimized");
+
+    // Hide Salesforce launcher
+    embeddedservice_bootstrap.utilAPI.hideChatButton();
+
+    // Show custom BKT launcher
+    customChatBtn.style.display = "flex";
+
+  });
+
+  // Custom BKT launcher click event
+  customChatBtn.addEventListener("click", () => {
+
+    embeddedservice_bootstrap.utilAPI.launchChat()
+      .then(() => {
+
+        console.log("Chat launched successfully");
+
+        // Hide custom launcher while chat is open
+        customChatBtn.style.display = "none";
+
+      })
+      .catch((err) => {
+
+        console.error("Error launching chat:", err);
+
+      });
+
+  });
+
+  // Initialize Salesforce Embedded Messaging
+  function initEmbeddedMessaging() {
+
+    try {
+
+      embeddedservice_bootstrap.settings.language = 'en_US';
+
+      // Hide standard Salesforce button on page load
+      embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
+
+      embeddedservice_bootstrap.init(
+        '00DC4000005pndJ',
+        'BKT_Web_Messaging',
+        'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
+        {
+          scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
+        }
+      );
+
+    } catch (err) {
+
+      console.error("Error loading Embedded Messaging:", err);
+
+    }
+
+  }
+
+</script>
+
+<!-- Salesforce Bootstrap Script -->
+<script
+  type="text/javascript"
+  src="https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js"
+  onload="initEmbeddedMessaging()">
+</script>
 	
-<!-- Custom Round BKT Chat Launcher Button -->
-  <style>
-    #custom-bkt-chat-btn {
-      width: 64px;
-      height: 64px;
-      padding: 0;
-      border-radius: 50%;
-      background: #FFFFFF;
-      border: 2px solid #007734;
-      display: none; /* Hidden until Salesforce widget is ready */
-      align-items: center;
-      justify-content: center;
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 9999;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    }
-
-    #custom-bkt-chat-btn img {
-      width: 44px;
-      height: 44px;
-      object-fit: contain;
-    }
-  </style>
-
-  <!-- Replace YOUR_BKT_LOGO_URL with your actual logo image URL -->
-  <button id="custom-bkt-chat-btn" aria-label="Open Chat">
-    <img src="https://commercial.bkt-tires.com/wp-content/uploads/2026/02/logo-consumer-on_light@2x-1.png" alt="BKT Chat" />
-  </button>
-
-  <script type="text/javascript">
-    const customChatBtn = document.getElementById("custom-bkt-chat-btn");
-
-    // 1. Show your custom button once the Salesforce button/widget is ready
-    window.addEventListener("onEmbeddedMessagingButtonCreated", () => {
-      customChatBtn.style.display = "flex";
-    });
-
-    // 2. Re-show your custom button if the user minimizes the chat window
-    window.addEventListener("onEmbeddedMessagingWindowMinimized", () => {
-      customChatBtn.style.display = "flex";
-    });
-
-    // 3. Launch Salesforce chat and hide your custom button on click
-    customChatBtn.addEventListener("click", () => {
-      embeddedservice_bootstrap.utilAPI.launchChat()
-        .then(() => {
-          customChatBtn.style.display = "none";
-        })
-        .catch((err) => {
-          console.error("Error launching chat:", err);
-        });
-    });
-
-    function initEmbeddedMessaging() {
-      try {
-        embeddedservice_bootstrap.settings.language = 'en_US';
-        // Hide the default Salesforce "Ask Me Anything" pill button
-        embeddedservice_bootstrap.settings.hideChatButtonOnLoad = true;
-
-        embeddedservice_bootstrap.init(
-          '00DC4000005pndJ',
-          'BKT_Web_Messaging',
-          'https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729',
-          {
-            scrt2URL: 'https://prolim5--dev.sandbox.my.salesforce-scrt.com'
-          }
-        );
-      } catch (err) {
-        console.error('Error loading Embedded Messaging: ', err);
-      }
-    }
-  </script>
-  <script type="text/javascript" src="https://prolim5--dev.sandbox.my.site.com/ESWBKTWebMessag1795084193729/assets/js/bootstrap.min.js" onload="initEmbeddedMessaging()"></script>
+	
 
   <script>
     const toggleBtn = document.getElementById("theme-toggle");
